@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .slider-container {
+            display: flex;
+            overflow: hidden;
+            width: 400px;
+            height: 500px;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .cards-wrapper {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .card {
+            min-width: 400px;
+            width: 400px;
+            height: 500px;
+            box-sizing: border-box;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f5f5f5;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-right: 20px; /* Adjust as needed */
+        }
+
+        .dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .dot {
+            height: 10px;
+            width: 10px;
+            margin: 0 5px;
+            background-color: #bbb;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background-color: #717171;
+        }
+        .name-container{
+            flex:0.5;
+            display: flex;flex-direction: column;
+            margin-bottom: 2rem;
+        }
+        .name-container span{
+         font-size: .8rem;
+         font-weight: 700;
+
+        }
+        .price-container{
+            flex:2;
+            display: flex;
+            flex-direction: column;row-gap: 5px;
+            background-color: rgb(234, 248, 252);
+            padding: 20px 10px;
+            border-radius: 9px;
+           
+        }
+        
+        .text{
+            color: blue;
+
+        }
+        .price{
+             color: black;
+             font-size: 1.75rem;
+             font-weight: 600;
+        }
+
+        .details-container{
+        
+           padding: 20px 10px;
+         
+            margin-bottom: 10px;
+            display: flex;
+            justify-content:flex-start;
+            
+            
+        }
+        .details-container p{
+            justify-content: center;
+        }
+        .btn{
+            border: none;
+            color: blue;
+            cursor: pointer;
+        }
+       
+    </style>
+</head>
+<body>
+
+<div class="slider-container">
+    <div class="cards-wrapper">
+        <!-- Card 1 -->
+        <div class="card">
+              <div class="name-container">
+                <span>Limited Libality</span>
+                <span>PatnerShip</span>
+              </div>
+              <div class="price-container">
+                <span class="text">Starting</span>
+                <span class="price">999</span>
+                <span class="text" >+ Statutory Fees</span>
+              </div>
+            <div class="details-container">
+          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deserunt ipsum eveniet at corrupti numquam, dolorem, assumenda perspiciatis hic aperiam sint nesciunt provident voluptatem doloremque nostrum facilis eius quod quibusdam modi.
+            assumenda perspiciatis hic aperiam sint nesciunt provident voluptatem doloremque nostrum facilis eius quod quibusdam modi
+          </p>
+            </div>
+           
+            <button class="btn">Know More</button>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+            <div class="name-container">
+                <h2>Limited Libality PatnerShip</h2>
+              </div>
+              <div class="price-container">
+                <span class="text">Starting</span>
+                <span class="price">999</span>
+                <span class="text" >+ Statutory Fees</span>
+              </div>
+            <div class="details-container">
+          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deserunt ipsum eveniet at corrupti numquam, dolorem, assumenda perspiciatis hic aperiam sint nesciunt provident voluptatem doloremque nostrum facilis eius quod quibusdam modi.</p>
+            </div>
+           
+            <div class="btn-container">
+                <button class="btn">Know More</button>
+            </div>
+          
+        </div>
+
+        <!-- Add more cards as needed -->
+        
+    </div>
+</div>
+
+<div class="dots"></div>
+
+<script>
+    const cardsWrapper = document.querySelector('.cards-wrapper');
+    const dotsContainer = document.querySelector('.dots');
+
+    // Add a dot for each card
+    for (let i = 0; i < cardsWrapper.children.length; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        dotsContainer.appendChild(dot);
+
+        // Add click event listener to each dot
+        dot.addEventListener('click', () => {
+            setActiveCard(i);
+        });
+    }
+
+    // Set the first dot as active initially
+    dotsContainer.children[0].classList.add('active');
+
+    let activeCardIndex = 0;
+
+    // Function to set the active card
+    function setActiveCard(index) {
+        cardsWrapper.style.transform = `translateX(${-index * 420}px)`; // 420 is the card width + margin-right
+        dotsContainer.querySelector('.active').classList.remove('active');
+        dotsContainer.children[index].classList.add('active');
+        activeCardIndex = index;
+    }
+
+    // Swipe functionality
+    let startX = 0;
+    let isDragging = false;
+
+    cardsWrapper.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.pageX - cardsWrapper.offsetLeft;
+    });
+
+    cardsWrapper.addEventListener('mouseup', () => {
+        isDragging = false;
+        snapToCard();
+    });
+
+    cardsWrapper.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const x = e.pageX - cardsWrapper.offsetLeft;
+        const dragDistance = x - startX;
+        cardsWrapper.style.transform = `translateX(${-activeCardIndex * 420 + dragDistance}px)`; // 420 is the card width + margin-right
+    });
+
+    // Function to snap to the nearest card on mouse release
+    function snapToCard() {
+        const cardWidth = 420; // 420 is the card width + margin-right
+        const targetIndex = Math.round(-cardsWrapper.offsetLeft / cardWidth);
+        setActiveCard(targetIndex);
+    }
+</script>
+
+</body>
+</html>
